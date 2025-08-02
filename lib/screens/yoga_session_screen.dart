@@ -41,55 +41,61 @@ class _YogaSessionScreenState extends State<YogaSessionScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0D1B2A),
-      body: Consumer<YogaSessionController>(
-        builder: (context, controller, child) {
-          return SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  // Header with session info and controls
-                  _buildHeader(controller),
-                  
-                  const SizedBox(height: 16),
-                  
-                  // Progress bar
-                  _buildProgressBar(controller),
-                  
-                  const SizedBox(height: 20),
-                  
-                  // Main content area with image and text
-                  Expanded(
-                    child: _buildMainContent(controller),
-                  ),
-                  
-                  const SizedBox(height: 16),
-                  
-                  // Control buttons
-                  _buildControlButtons(controller),
-                ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          final controller = Provider.of<YogaSessionController>(context, listen: false);
+          _showExitConfirmation(context, controller);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: const Color(0xFF0D1B2A),
+        body: Consumer<YogaSessionController>(
+          builder: (context, controller, child) {
+            return SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    // Header with session info and controls
+                    _buildHeader(controller),
+                    
+                    const SizedBox(height: 16),
+                    
+                    // Progress bar
+                    _buildProgressBar(controller),
+                    
+                    const SizedBox(height: 20),
+                    
+                    // Main content area with image and text
+                    Expanded(
+                      child: _buildMainContent(controller),
+                    ),
+                    
+                    const SizedBox(height: 16),
+                    
+                    // Control buttons
+                    _buildControlButtons(controller),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      ),
-    );
+            );
+          },
+        ),
+      ), // End of Scaffold
+    ); // End of PopScope
   }
 
   Widget _buildHeader(YogaSessionController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Back button
+        // Back button with exit confirmation
         IconButton(
-          onPressed: () {
-            controller.stopSession();
-            Navigator.pop(context);
-          },
+          onPressed: () => _showExitConfirmation(context, controller),
           icon: const Icon(
-            Icons.arrow_back,
+            Icons.close,
             color: Colors.white,
             size: 28,
           ),
@@ -406,6 +412,66 @@ class _YogaSessionScreenState extends State<YogaSessionScreen>
           ),
         ),
       ],
+    );
+  }
+
+  void _showExitConfirmation(BuildContext context, YogaSessionController controller) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1B263B),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Text(
+            'Exit Session?',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          content: const Text(
+            'Are you sure you want to exit your yoga session? Your progress will be lost.',
+            style: TextStyle(
+              color: Colors.white70,
+              fontSize: 16,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+              },
+              child: const Text(
+                'Continue Session',
+                style: TextStyle(
+                  color: Color(0xFF4ECDC4),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+                controller.stopSession();
+                Navigator.of(context).pop(); // Exit session screen
+              },
+              child: const Text(
+                'Exit',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

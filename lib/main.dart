@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'controllers/yoga_session_controller.dart';
-import 'screens/session_preview_screen.dart';
-import 'screens/yoga_session_screen.dart';
+import 'screens/session_selection_screen.dart';
 import 'screens/audio_test_screen.dart';
 import 'screens/asset_verification_screen.dart';
 
@@ -38,8 +37,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _isLoading = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,12 +105,19 @@ class _HomeScreenState extends State<HomeScreen> {
               
               const SizedBox(height: 40),
               
-              // Load Session Button
+              // Browse Sessions Button
               SizedBox(
                 width: double.infinity,
                 height: 60,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _loadSession,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SessionSelectionScreen(),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF4CAF50),
                     foregroundColor: Colors.white,
@@ -122,29 +126,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.play_circle_outline, size: 28),
-                            SizedBox(width: 12),
-                            Text(
-                              'Load Yoga Session',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.library_books, size: 28),
+                      SizedBox(width: 12),
+                      Text(
+                        'Browse Yoga Sessions',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
                         ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               
@@ -206,51 +201,5 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _loadSession() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final controller = Provider.of<YogaSessionController>(context, listen: false);
-      await controller.loadSession('assets/CatCowJson.json');
-      
-      if (mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SessionPreviewScreen(
-              yogaSession: controller.yogaSession!,
-              onStartSession: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const YogaSessionScreen(),
-                  ),
-                );
-                controller.startSession();
-              },
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to load session: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
   }
 }

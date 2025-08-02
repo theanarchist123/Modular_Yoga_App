@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../models/yoga_session.dart';
-import '../services/yoga_session_service.dart';
+import '../services/dynamic_yoga_session_service.dart';
 
 class YogaSessionController extends ChangeNotifier {
   YogaSession? _yogaSession;
@@ -84,8 +84,8 @@ class YogaSessionController extends ChangeNotifier {
 
   Future<void> loadSession(String jsonPath) async {
     try {
-      _yogaSession = await YogaSessionService.loadYogaSession(jsonPath);
-      _expandedSequences = YogaSessionService.expandLoopableSequences(
+      _yogaSession = await DynamicYogaSessionService.loadYogaSession(jsonPath);
+      _expandedSequences = DynamicYogaSessionService.expandLoopableSequences(
         _yogaSession!.sequence,
         _yogaSession!.defaultLoopCount,
       );
