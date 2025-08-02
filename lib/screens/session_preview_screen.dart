@@ -28,8 +28,8 @@ class SessionPreviewScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0), // More balanced padding
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -64,7 +64,21 @@ class SessionPreviewScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
+                  
+                  // Description
+                  if (yogaSession.description != null) ...[
+                    Text(
+                      yogaSession.description!,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 16,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  
                   Row(
                     children: [
                       _buildInfoChip(
@@ -82,6 +96,73 @@ class SessionPreviewScreen extends StatelessWidget {
               ),
             ),
             
+            // Benefits Section
+            if (yogaSession.benefits != null && yogaSession.benefits!.isNotEmpty) ...[
+              const SizedBox(height: 24),
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF7FB069).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: const Color(0xFF7FB069).withOpacity(0.2),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.health_and_safety,
+                          color: const Color(0xFF7FB069),
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text(
+                          'Benefits',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    ...yogaSession.benefits!.map((benefit) => Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(top: 6),
+                            width: 4,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF7FB069),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              benefit,
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.8),
+                                fontSize: 14,
+                                height: 1.4,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )).toList(),
+                  ],
+                ),
+              ),
+            ],
+            
             const SizedBox(height: 24),
             
             // Poses Preview
@@ -96,7 +177,8 @@ class SessionPreviewScreen extends StatelessWidget {
             
             const SizedBox(height: 16),
             
-            Expanded(
+            Container(
+              height: 200, // Reduced height to bring button up
               child: ListView.builder(
                 itemCount: yogaSession.sequence.length,
                 itemBuilder: (context, index) {
@@ -106,8 +188,8 @@ class SessionPreviewScreen extends StatelessWidget {
               ),
             ),
             
-            // Start Button
-            const SizedBox(height: 20),
+            // Start Button - moved closer
+            const SizedBox(height: 16), // Reduced spacing
             SizedBox(
               width: double.infinity,
               height: 60,
@@ -174,8 +256,8 @@ class SessionPreviewScreen extends StatelessWidget {
 
   Widget _buildSequenceCard(YogaSequence sequence, int index) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 8), // Reduced margin
+      padding: const EdgeInsets.all(12), // Reduced padding
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.05),
         borderRadius: BorderRadius.circular(12),
@@ -187,28 +269,29 @@ class SessionPreviewScreen extends StatelessWidget {
         children: [
           // Sequence Number
           Container(
-            width: 40,
-            height: 40,
+            width: 32, // Smaller size
+            height: 32,
             decoration: BoxDecoration(
               color: sequence.type == 'loop' 
                   ? Colors.orange.withOpacity(0.2)
                   : Colors.blue.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Center(
               child: sequence.type == 'loop'
-                  ? const Icon(Icons.loop, color: Colors.orange, size: 20)
+                  ? const Icon(Icons.loop, color: Colors.orange, size: 16)
                   : Text(
                       '${index + 1}',
                       style: const TextStyle(
                         color: Colors.blue,
                         fontWeight: FontWeight.bold,
+                        fontSize: 12,
                       ),
                     ),
             ),
           ),
           
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           
           // Sequence Info
           Expanded(
@@ -219,16 +302,16 @@ class SessionPreviewScreen extends StatelessWidget {
                   sequence.name.replaceAll('_', ' ').toUpperCase(),
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 14,
+                    fontSize: 12, // Smaller font
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   '${sequence.durationSec}s ${sequence.type == 'loop' ? '× ${yogaSession.defaultLoopCount}' : ''}',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
-                    fontSize: 12,
+                    fontSize: 10, // Smaller font
                   ),
                 ),
               ],
@@ -237,18 +320,18 @@ class SessionPreviewScreen extends StatelessWidget {
           
           // Type Badge
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), // Smaller padding
             decoration: BoxDecoration(
               color: sequence.type == 'loop' 
                   ? Colors.orange.withOpacity(0.2)
                   : Colors.green.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
               sequence.type.toUpperCase(),
               style: TextStyle(
                 color: sequence.type == 'loop' ? Colors.orange : Colors.green,
-                fontSize: 10,
+                fontSize: 8, // Smaller font
                 fontWeight: FontWeight.w600,
               ),
             ),

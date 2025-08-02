@@ -4,6 +4,8 @@ class YogaSession {
   final String category;
   final int defaultLoopCount;
   final String tempo;
+  final String? description;
+  final List<String>? benefits;
   final Map<String, String> images;
   final Map<String, String> audio;
   final List<YogaSequence> sequence;
@@ -14,6 +16,8 @@ class YogaSession {
     required this.category,
     required this.defaultLoopCount,
     required this.tempo,
+    this.description,
+    this.benefits,
     required this.images,
     required this.audio,
     required this.sequence,
@@ -26,6 +30,10 @@ class YogaSession {
       category: json['metadata']['category'],
       defaultLoopCount: json['metadata']['defaultLoopCount'],
       tempo: json['metadata']['tempo'],
+      description: json['metadata']['description'],
+      benefits: json['metadata']['benefits'] != null 
+          ? List<String>.from(json['metadata']['benefits'])
+          : null,
       images: Map<String, String>.from(json['assets']['images']),
       audio: Map<String, String>.from(json['assets']['audio']),
       sequence: (json['sequence'] as List)

@@ -176,6 +176,21 @@ class _SessionSelectionScreenState extends State<SessionSelectionScreen> {
                 ),
               ),
               const SizedBox(height: 8),
+              
+              // Add description for Cat-Cow specifically
+              if (session.title.toLowerCase().contains('cat-cow'))
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: Text(
+                    'A gentle, flowing movement that creates mobility and awareness through the entire spine while coordinating breath with movement.',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.7),
+                      fontSize: 14,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              
               Row(
                 children: [
                   Icon(

@@ -4,7 +4,16 @@
     "title": "Cat-Cow Flow",
     "category": "spinal_mobility",
     "defaultLoopCount": 4,
-    "tempo": "slow"
+    "tempo": "slow",
+    "description": "A gentle, flowing movement that creates mobility and awareness through the entire spine while coordinating breath with movement.",
+    "benefits": [
+      "Improves spinal flexibility and mobility",
+      "Relieves tension in back and neck",
+      "Strengthens core and improves posture",
+      "Calms the mind and reduces stress",
+      "Enhances breath awareness and coordination",
+      "Prepares the body for deeper yoga poses"
+    ]
   },
   "assets": {
     "images": {
