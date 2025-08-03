@@ -243,9 +243,10 @@ class _YogaSessionScreenState extends State<YogaSessionScreen>
           // Pose Image
           if (imagePath != null)
             Container(
-              width: 180,
-              height: 180,
+              width: 220,
+              height: 220,
               decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.05), // Added subtle background
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
@@ -257,10 +258,12 @@ class _YogaSessionScreenState extends State<YogaSessionScreen>
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Image.asset(
-                  imagePath,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
+                child: Container(
+                  padding: const EdgeInsets.all(8), // Added padding to ensure full visibility
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.contain, // Changed from cover to contain
+                    errorBuilder: (context, error, stackTrace) {
                     return Container(
                       color: Colors.white.withOpacity(0.1),
                       child: Column(
@@ -284,6 +287,7 @@ class _YogaSessionScreenState extends State<YogaSessionScreen>
                       ),
                     );
                   },
+                  ),
                 ),
               ),
             ),
